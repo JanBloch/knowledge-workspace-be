@@ -6,9 +6,11 @@ const auth = require("./middleware/auth");
 const con = require("./connection");
 const Organization = require("./model/organization");
 const { User } = require("./user/user");
+const cors = require("./middleware/cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors);
 app.use("/api", auth);
 
 con.connect((err) => {
