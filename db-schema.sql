@@ -27,20 +27,32 @@ CREATE TABLE organization_user (
 
 CREATE TABLE workspace (
     id INT PRIMARY KEY AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
     organization_id INT NOT NULL,
     CONSTRAINT workspace_organization_id FOREIGN KEY (organization_id)
         REFERENCES organization (id)
+);
+CREATE TABLE folder (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    parent_folder_id INT,
+    workspace_id INT NOT NULL,
+    CONSTRAINT folder_parent_folder_id FOREIGN KEY (parent_folder_id)
+        REFERENCES folder (id),
+    CONSTRAINT folder_workspace_id FOREIGN KEY (workspace_id)
+        REFERENCES workspace (id)
 );
 
 CREATE TABLE entry (
     id INT PRIMARY KEY AUTO_INCREMENT,
     text VARCHAR(2500) NOT NULL,
-    workspace_id INT NOT NULL,
     author_id INT NOT NULL,
+    folder_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT entry_workspace_id FOREIGN KEY (workspace_id)
-        REFERENCES workspace (id),
     CONSTRAINT entry_user_id FOREIGN KEY (author_id)
-        REFERENCES user (id)
+        REFERENCES user (id),
+    CONSTRAINT entry_folder_id FOREIGN KEY (folder_id)
+        REFERENCES folder (id)
 );
+
