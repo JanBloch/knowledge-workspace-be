@@ -2,15 +2,19 @@ const user = require("./user/user");
 const mysql = require("mysql");
 const express = require("express");
 const filter = require("./filter");
+
+//middlewares
 const auth = require("./middleware/auth");
+const checkPageReadPermission = require("./middleware/check-page-read-permission");
+const cors = require("./middleware/cors");
+
 const con = require("./connection");
 
 //models
 const Organization = require("./model/organization");
 const Entry = require("./model/entry");
-
 const { User } = require("./user/user");
-const cors = require("./middleware/cors");
+
 const connection = require("./connection");
 
 const app = express();
@@ -72,21 +76,4 @@ function init() {
   app.listen(8000, () => {
     console.log("Server listening at http://localhost:8000");
   });
-}
-
-function checkPageReadPermission(req, res, next) {
-  let uid = req.user.getId();
-  Entry.get(req.params.id).then((entry) =>
-    entry.getFolder().then((folder) => {
-      connection.query(
-        "SELECT COUNT(*) as count FROM organization WHERE id IN (SELECT organization_id FROM workspace WHERE id=?)",
-        [uid, folder.getWorkspaceId()],
-        (err, result) => {
-          if (err) res.status(401).json({ error: "Permission denied" });
-          else if (result[0].count) next();
-          else res.status(401).json({ error: "Permission denied" });
-        }
-      );
-    })
-  );
 }
