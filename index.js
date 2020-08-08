@@ -73,6 +73,13 @@ function init() {
       res.json(v.getData());
     });
   });
+  app.get("/api/page/:id/folder", (req, res) => {
+    Entry.get(req.params.id).then((v) => {
+      v.getFolder().then((folder) => {
+        res.json(folder.getData());
+      });
+    });
+  });
   app.listen(8000, () => {
     console.log("Server listening at http://localhost:8000");
   });
