@@ -1,5 +1,6 @@
 const connection = require("../connection");
 const filter = require("../filter");
+const Workspace = require("./workspace");
 
 module.exports = class Folder {
   show = ["id", "name", "parent_folder_id", "workspace_id"];
@@ -10,6 +11,18 @@ module.exports = class Folder {
       parent_folder_id: parent_folder_id,
       workspace_id: workspace_id,
     };
+  }
+
+  async getWorkspace() {
+    return new Promise((resolve, reject) => {
+      Workspace.get(this.data.workspace_id)
+        .then((v) => {
+          resolve(v);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 
   getId() {
