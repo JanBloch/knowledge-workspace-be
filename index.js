@@ -4,14 +4,21 @@ const express = require("express");
 const filter = require("./filter");
 const auth = require("./middleware/auth");
 const con = require("./connection");
+
+//models
 const Organization = require("./model/organization");
+const Entry = require("./model/entry");
+
 const { User } = require("./user/user");
 const cors = require("./middleware/cors");
+const connection = require("./connection");
 
 const app = express();
+
 app.use(express.json());
 app.use(cors);
 app.use("/api", auth);
+app.use("/api/page/:id", checkPageReadPermission);
 
 con.connect((err) => {
   if (err) throw err;
@@ -56,7 +63,30 @@ function init() {
       res.json({ message: "success" });
     });
   });
-  app.listen(3000, () => {
-    console.log("Server listening at http://localhost:3000");
+
+  app.get("/api/page/:id", (req, res) => {
+    Entry.get(req.params.id).then((v) => {
+      res.json(v.getData());
+    });
   });
+  app.listen(8000, () => {
+    console.log("Server listening at http://localhost:8000");
+  });
+}
+
+function checkPageReadPermission(req, res, next) {
+  let uid = req.user.getId();
+  Entry.get(req.params.id).then((entry) =>
+    entry.getFolder().then((folder) => {
+      connection.query(
+        "SELECT COUNT(*) as count FROM organization WHERE id IN (SELECT organization_id FROM workspace WHERE id=?)",
+        [uid, folder.getWorkspaceId()],
+        (err, result) => {
+          if (err) res.status(401).json({ error: "Permission denied" });
+          else if (result[0].count) next();
+          else res.status(401).json({ error: "Permission denied" });
+        }
+      );
+    })
+  );
 }
