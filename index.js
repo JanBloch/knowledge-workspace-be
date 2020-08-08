@@ -80,6 +80,15 @@ function init() {
       });
     });
   });
+  app.get("/api/page/:id/folder/workspace", (req, res) => {
+    Entry.get(req.params.id).then((v) => {
+      v.getFolder().then((folder) => {
+        folder.getWorkspace().then((workspace) => {
+          res.json(workspace.getData());
+        });
+      });
+    });
+  });
   app.listen(8000, () => {
     console.log("Server listening at http://localhost:8000");
   });
