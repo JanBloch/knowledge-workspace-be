@@ -49,11 +49,9 @@ function init() {
   });
   app.post("/auth/register", (req, res) => {
     let body = filter(req.body, ["username", "full_name", "email", "password"]);
-    user
-      .register(body.username, body.password, body.full_name, body.email, con)
-      .then((id) => {
-        res.json({ id: id });
-      });
+    user.register(...body, con).then((id) => {
+      res.json({ id: id });
+    });
   });
 
   app.get("/api/authenticated/organization", (req, res) => {
@@ -90,6 +88,15 @@ function init() {
         });
       });
     });
+  });
+  app.get("/api/folder/:id", (req, res) => {
+    Folder.get(req.params.id)
+      .then((folder) => {
+        res.json(folder.getData());
+      })
+      .catch((err) => {
+        res.json({ error: err });
+      });
   });
   app.listen(8000, () => {
     console.log("Server listening at http://localhost:8000");
