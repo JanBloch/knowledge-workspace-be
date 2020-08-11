@@ -6,6 +6,7 @@ const filter = require("./filter");
 //middlewares
 const auth = require("./middleware/auth");
 const checkPageReadPermission = require("./middleware/check-page-read-permission");
+const checkFolderReadPermission = require("./middleware/check-folder-read-permission");
 const cors = require("./middleware/cors");
 
 const con = require("./connection");
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cors);
 app.use("/api", auth);
 app.use("/api/page/:id", checkPageReadPermission);
+app.use("/api/folder/:id", checkFolderReadPermission);
 
 con.connect((err) => {
   if (err) throw err;
