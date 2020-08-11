@@ -42,4 +42,27 @@ module.exports = class Folder {
       connection.query(null, null, (err, res) => {});
     });
   }
+
+  static async get(id) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT name, parent_folder_id, workspace_id FROM folder WHERE id=?",
+        [id],
+        (err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (res.length == 0) {
+            reject("Folder not found");
+            return;
+          }
+          res = res[0];
+          resolve(
+            new Folder(id, res.name, res.parent_folder_id, res.workspace_id)
+          );
+        }
+      );
+    });
+  }
 };
