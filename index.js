@@ -98,6 +98,21 @@ function init() {
         res.json({ error: err });
       });
   });
+
+  app.get("/api/folder/:id/content", (req, res) => {
+    Folder.get(req.params.id)
+      .then((folder) => {
+        folder
+          .getContent()
+          .then((content) => {
+            res.json(content);
+          })
+          .catch((err) => res.json({ error: err }));
+      })
+      .catch((err) => {
+        res.json({ error: err });
+      });
+  });
   app.listen(8000, () => {
     console.log("Server listening at http://localhost:8000");
   });
