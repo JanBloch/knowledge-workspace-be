@@ -3,13 +3,14 @@ const Folder = require("./folder");
 const filter = require("../filter");
 
 module.exports = class Entry {
-  show = ["id", "text", "author_id", "folder_id"];
-  constructor(id, text, author_id, folder_id) {
+  show = ["id", "text", "author_id", "folder_id", "title"];
+  constructor(id, text, author_id, folder_id, title) {
     this.data = {
       id: id,
       text: text,
       author_id: author_id,
       folder_id: folder_id,
+      title: title,
     };
   }
 
@@ -51,7 +52,7 @@ module.exports = class Entry {
   static async get(id) {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT id, text, author_id, folder_id FROM entry WHERE id=?",
+        "SELECT id, text, author_id, folder_id,title FROM entry WHERE id=?",
         [id],
         (err, res) => {
           if (err) {
@@ -62,7 +63,9 @@ module.exports = class Entry {
             return;
           }
           res = res[0];
-          resolve(new Entry(id, res.text, res.author_id, res.folder_id));
+          resolve(
+            new Entry(id, res.text, res.author_id, res.folder_id, res.title)
+          );
         }
       );
     });
