@@ -15,7 +15,7 @@ const con = require("./connection");
 const Organization = require("./model/organization");
 const Entry = require("./model/entry");
 const { User } = require("./user/user");
-
+const Folder = require("./model/folder");
 const connection = require("./connection");
 
 const app = express();
@@ -49,9 +49,12 @@ function init() {
   });
   app.post("/auth/register", (req, res) => {
     let body = filter(req.body, ["username", "full_name", "email", "password"]);
-    user.register(...body, con).then((id) => {
-      res.json({ id: id });
-    });
+
+    user
+      .register(body.username, body.password, body.full_name, body.email, con)
+      .then((id) => {
+        res.json({ id: id });
+      });
   });
 
   app.get("/api/authenticated/organization", (req, res) => {

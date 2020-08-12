@@ -37,6 +37,21 @@ module.exports = class Folder {
     return filter(this.data, this.show);
   }
 
+  async getContent() {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT id, name AS 'title', 'FOLDER' AS type FROM folder WHERE parent_folder_id = ? UNION SELECT id, title, 'ENTRY' AS type FROM entry WHERE folder_id = ?",
+        [this.data.id, this.data.id],
+        (err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(res);
+        }
+      );
+    });
+  }
   async getChildren() {
     return new Promise((resolve, reject) => {
       connection.query(null, null, (err, res) => {});
