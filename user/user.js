@@ -52,7 +52,7 @@ class User {
     });
   }
   static async get(id, connection) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       connection.query(
         "SELECT email, username, full_name, password FROM user WHERE id=?",
         [id],
