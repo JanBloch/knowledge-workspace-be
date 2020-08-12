@@ -7,7 +7,7 @@ const filter = require("./filter");
 const auth = require("./middleware/auth");
 const checkPageReadPermission = require("./middleware/check-page-read-permission");
 const checkFolderReadPermission = require("./middleware/check-folder-read-permission");
-const cors = require("./middleware/cors");
+//const cors = require("./middleware/cors");
 
 const con = require("./connection");
 
@@ -18,10 +18,13 @@ const { User } = require("./user/user");
 const Folder = require("./model/folder");
 const connection = require("./connection");
 
+const cors = require("cors");
+
 const app = express();
 
 app.use(express.json());
-app.use(cors);
+app.use(cors());
+
 app.use("/api", auth);
 app.use("/api/page/:id", checkPageReadPermission);
 app.use("/api/folder/:id", checkFolderReadPermission);
