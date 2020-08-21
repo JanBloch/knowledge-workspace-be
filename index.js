@@ -7,7 +7,6 @@ const filter = require("./filter");
 const auth = require("./middleware/auth");
 const checkPageReadPermission = require("./middleware/check-page-read-permission");
 const checkFolderReadPermission = require("./middleware/check-folder-read-permission");
-//const cors = require("./middleware/cors");
 
 const con = require("./connection");
 

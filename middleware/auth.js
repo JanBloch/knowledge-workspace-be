@@ -13,9 +13,14 @@ module.exports = (req, res, next) => {
       next();
     });
   } catch (e) {
-    console.log(e);
-    res.status(401).json({
-      error: "Invalid Request",
-    });
+    if (e.toString().indexOf("TokenExpiredError") == 0) {
+      res.status(401).json({
+        error: "Token expired",
+      });
+    } else {
+      res.status(401).json({
+        error: "Invalid Request",
+      });
+    }
   }
 };
